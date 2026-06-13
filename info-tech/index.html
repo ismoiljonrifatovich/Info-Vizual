@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>InfoVizual | Informatika videodarslar to‘plami</title>
+    <!-- Google Fonts + Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+     <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bg-aura"></div>
+<div class="container" id="app">
+    <div class="hero">
+        <div class="hero-badge"><i class="fas fa-play-circle"></i> Interaktiv videodarslar</div>
+        <h1>Informatika va AT<span style="color:#3b82f6;">  videodarslar</span> tizimi</h1>
+        <p>Mavzuni bosing, ichida bir nechta videolarni ketma-ket tomosha qiling!</p>
+    </div>
+
+    <!-- Asosiy menyu (barcha mavzular) -->
+    <div id="topicsContainer" class="topics-grid"></div>
+
+    <!-- Playlist view (dastlab yashirin) -->
+    <div id="playlistView" class="playlist-view hidden">
+        <button id="backBtn" class="back-btn"><i class="fas fa-arrow-left"></i> Barcha mavzular</button>
+        <div id="playlistContent"></div>
+    </div>
+
+    
+</div>
+
+<script>
+    
+    const topicsData = [
+        {
+            id: "algoritmlar",
+            title: "Algoritmlar",
+            icon: "fas fa-code-branch",
+            description: "Dasturlash algoritmlari, chiziqli,tarmoqlanuvchi va takrorlanuvchi algoritmlar",
+            videos: [
+                
+            ]
+        },
+        {
+            id: "suniy_intellekt",
+            title: "Sun'iy Intellekt",
+            icon: "fas fa-robot",
+            description: "Machine Learning, neyron tarmoqlar",
+            videos: [
+                
+            ]
+        },
+        {
+            id: "data_structures",
+            title: "Ma'lumotlar tuzilmasi",
+            icon: "fas fa-database",
+            description: "Sql,Postgresql,Sqlite",
+            videos: [
+                
+            ]
+        },
+        {
+            id: "cybersecurity",
+            title: "Kiberxavfsizlik",
+            icon: "fas fa-shield-haltered",
+            description: "Xavfsizlik, shifrlash, tarmoq himoyasi",
+            videos: [
+                
+            ]
+        },
+        {
+            id: "web_dev",
+            title: "Web dasturlash",
+            icon: "fas fa-globe",
+            description: "HTML, CSS, JS, backend asoslari",
+            videos: [
+                { title: "HTML", desc: "HTML o'zi nima?", src: "C:/Users/HP/Desktop/info-tech/media/html1.mp4", type: "video/mp4" }
+            ]
+        },
+        {
+            id: "cloud",
+            title: "Tarmoq texnologiyalari",
+            icon: "fas fa-cloud-upload-alt",
+            description: "Tarmoq komponentlari, tarmoq turlari",
+            videos: [
+                { title: "Tarmoq komponentlari", desc: "Tarmoq komponentlari", src: "C:/Users/HP/Desktop/info-tech/media/Tarmoq.mp4", type: "video/mp4" }
+            ]
+        }
+    ];
+
+    // DOM elementlar
+    const topicsContainer = document.getElementById('topicsContainer');
+    const playlistView = document.getElementById('playlistView');
+    const playlistContent = document.getElementById('playlistContent');
+    const backBtn = document.getElementById('backBtn');
+
+    // Asosiy menyuni ko'rsatish
+    function renderTopics() {
+        topicsContainer.innerHTML = '';
+        topicsData.forEach(topic => {
+            const card = document.createElement('div');
+            card.className = 'topic-card';
+            card.innerHTML = `
+                <div class="topic-icon"><i class="${topic.icon}"></i></div>
+                <h3>${topic.title}</h3>
+                <p>${topic.description}</p>
+                <div class="video-count"><i class="fas fa-list"></i> ${topic.videos.length} ta video</div>
+            `;
+            card.addEventListener('click', () => showPlaylist(topic.id));
+            topicsContainer.appendChild(card);
+        });
+    }
+
+    // Tanlangan mavzu ichidagi videolarni chiqarish
+    function showPlaylist(topicId) {
+        const topic = topicsData.find(t => t.id === topicId);
+        if (!topic) return;
+
+        // Asosiy menyuni yashir, playlist viewni ko'rsat
+        topicsContainer.classList.add('hidden');
+        playlistView.classList.remove('hidden');
+        
+        // Playlist mazmunini to‘ldirish
+        playlistContent.innerHTML = `
+            <div class="topic-header">
+                <h2><i class="${topic.icon}" style="margin-right: 0.6rem;"></i> ${topic.title}</h2>
+                <p>${topic.description} — quyida ${topic.videos.length} ta video ketma-ket joylashgan</p>
+            </div>
+            <div class="video-list">
+                ${topic.videos.map((video, idx) => `
+                    <div class="video-item">
+                        <div class="video-wrapper">
+                            <video controls preload="metadata" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 225'%3E%3Crect width='400' height='225' fill='%23121f2f'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%234bc0ff' text-anchor='middle' dominant-baseline='middle'%3E🎬 ${video.title}%3C/text%3E%3C/svg%3E">
+                                <source src="${video.src}" type="${video.type}">
+                                Sizning brauzeringiz video tegini qo‘llab-quvvatlamaydi.
+                            </video>
+                        </div>
+                        <div class="video-info">
+                            <h4>${idx+1}. ${video.title}</h4>
+                            <p>${video.desc}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        // Sahifani yuqoriga siljitish
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Orqaga qaytish (asosiy menyuga)
+    function goBackToTopics() {
+        playlistView.classList.add('hidden');
+        topicsContainer.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Boshlang'ich render va eventlar
+    renderTopics();
+    backBtn.addEventListener('click', goBackToTopics);
+
+</script>
+</body>
+</html>
